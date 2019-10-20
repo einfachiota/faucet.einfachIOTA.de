@@ -8,13 +8,65 @@ const port = process.env.PORT
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-app.use(cors());
 
+var allowedOrigins = ['http://localhost:8080'];
+app.use(cors({
+    origin: function (origin, callback) {
+        // allow requests with no origin 
+        // (like mobile apps or curl requests)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.indexOf(origin) === -1) {
+            var msg = 'The CORS policy for this site does not ' +
+                'allow access from the specified Origin.';
+            return callback(new Error(msg), false);
+        }
+        return callback(null, true);
+    }
+}));
 app.use('/', express.static('frontend/dist'));
+
+app.get("/total_balance", function (req, res) {
+    console.log("total_balance called")
+    paymentModule.getBalance().then((balance) => {
+        console.log("balance", balance)
+        res.send({ balance: balance});
+    }).catch(err => {
+        console.log("err", err)
+    })
+})
+
+app.post("/pay_tokens", function (req, res) {
+    console.log("pay_tokens called")
+    var address = req.body.address;
+    var value = req.body.value || 0;
+    console.log("address", address)
+    console.log("value", value)
+    let payoutObject = {
+        //required
+        address: address,
+        value: value,
+        //optional
+        message: 'Example message',
+        tag: 'TRYTETAG',
+        //indexes for input addresses, only in special cases required
+        // starIndex: 0,
+        // endIndex: 1
+    }
+    paymentModule.payout.send(payoutObject)
+        .then(result => {
+            console.log("result", result)
+            res.send(result);
+        })
+        .catch(err => {
+            console.log(err)
+            res.send(err);
+
+        })
+})
 
 var options = {
     mount: '/payments',
-    value: 0,
+    value: 1,
     websockets: true
     // ...
 }
