@@ -14,12 +14,18 @@ COPY package.json /app/package.json
 RUN  npm install
 
 # Copy app source
+
+WORKDIR /app/frontend
+COPY ./frontend/package.json /app/frontend/package.json
+RUN npm install
+COPY ./frontend /app/frontend
+
+
+RUN npm run build
+
+WORKDIR /app
 COPY . /app
 
-RUN cd frontend
-RUN npm install
-RUN npm run build
-RUN cd ..
 
 # set your port
 ENV PORT 3001
