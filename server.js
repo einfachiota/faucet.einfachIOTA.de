@@ -39,6 +39,8 @@ app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
     var address = req.body.address;
     var value = req.body.value || 0;
+    var message = req.body.message || 'EINFACHIOTA';
+    var tag = req.body.tag || 'EINFACHIOTA';
     console.log("address", address)
     console.log("value", value)
     let payoutObject = {
@@ -46,8 +48,8 @@ app.post("/pay_tokens", function (req, res) {
         address: address,
         value: value,
         //optional
-        message: 'Example message',
-        tag: 'TRYTETAG',
+        message: message,
+        tag: tag,
         //indexes for input addresses, only in special cases required
         // starIndex: 0,
         // endIndex: 1
