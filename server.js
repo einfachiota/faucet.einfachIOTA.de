@@ -43,6 +43,9 @@ app.post("/pay_tokens", function (req, res) {
     var tag = req.body.tag || 'EINFACHIOTA';
     console.log("address", address)
     console.log("value", value)
+    if(value > 1000){
+      value = 1000
+    }
     let payoutObject = {
         //required
         address: address,
