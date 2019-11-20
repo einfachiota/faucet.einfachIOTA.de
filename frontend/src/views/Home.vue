@@ -17,7 +17,7 @@
     </div>
     <div class="section">
       <div class="container">
-        <h2>Fülle das faucet</h2>
+        <h2>Fülle das Faucet</h2>
         <iota-payment>Sende Devnet IOTA</iota-payment>
       </div>
     </div>
@@ -87,6 +87,25 @@ export default {
     display: flex;
     justify-content: space-between;
     align-items: center;
+  }
+  button {
+    margin: 0 auto;
+    max-width: 500px;
+    margin-top: 15px;
+    padding: 15px 20px;
+    border: 0;
+    border-radius: 8px;
+    outline: none;
+    color: #fff;
+    font-size: 24px;
+    line-height: 29px;
+    text-decoration: none;
+    background-color: var(--primary);
+    box-shadow: var(--primary);
+    cursor: pointer;
+    &:hover {
+      background-color: var(--primary-darken);
+    }
   }
 }
 @media only screen and (max-width: 740px) {

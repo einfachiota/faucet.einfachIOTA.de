@@ -18,8 +18,53 @@
         placeholder="IOTA Devnet Addresse"
       />
     </el-form-item>
-    <div v-if="payout_sent">
-      <p>Du kannst die Transaktion auf <a :href="'https://devnet.thetangle.org/address/' + ruleForm.address" target="_blank">TheTange.org</a> verfolgen.</p>
+    <el-form-item
+      label="IOTA Amount"
+      prop="value"
+    >
+      <input
+        id="myRange"
+        type="range"
+        min="0"
+        max="1000"
+        value="10"
+        class="slider"
+        @input="changePayoutValue"
+        @change="changePayoutValue"
+      >
+      <el-input
+        v-model="ruleForm.value"
+        type="number"
+        autocomplete="off"
+        placeholder="1"
+      />
+    </el-form-item>
+    <el-form-item
+      label="Message"
+      prop="message"
+    >
+      <el-input
+        v-model="ruleForm.message"
+        type="text"
+        autocomplete="off"
+        placeholder="Message"
+      />
+    </el-form-item>
+    <div v-if="payout_sent && txhash.length !== 81">
+      <p>
+        Du kannst die Transaktion auf <a
+          :href="'https://devnet.thetangle.org/address/' + ruleForm.address"
+          target="_blank"
+        >TheTange.org</a> verfolgen.
+      </p>
+    </div>
+    <div v-else-if="txhash.length === 81">
+      <p>
+        Transaktion gesendet: <a
+          :href="'https://devnet.thetangle.org/transaction/' + txhash"
+          target="_blank"
+        >devnet.thetangle.org</a>
+      </p>
     </div>
     <div v-if="typeof ruleForm.errors !== 'undefined' && ruleForm.errors.length > 0">
       <p
@@ -45,6 +90,11 @@
 
 <script>
 import axios from 'axios';
+import io from 'socket.io-client';
+const socket = io('http://localhost:3001', {
+	path: '/payments/socket'
+});
+
 
 export default {
 	name: 'Form',
@@ -61,14 +111,23 @@ export default {
 		};
 		return {
 			payout_sent: false,
+			txhash: 'empty',
 			ruleForm: {
 				address: '',
+				value: 1,
+				message: '',
 				errors: []
 			},
 			rules: {
 				address: [{ validator: validateAddress, trigger: 'blur' }]
 			}
 		};
+	},
+	created(){
+		let self = this;
+		socket.on('payouts', function (data) {
+			self.txhash = data.payout.txhash;
+		});
 	},
 	methods: {
 		send(formName) {
@@ -88,6 +147,7 @@ export default {
 								self.ruleForm.errors.push('Invalid address');
 								console.log('Server responded with invalid address');
 							} else if (data.address) {
+								socket.emit('storeClientInfo', { paymentOrPayoutId: response.data.id });
 								self.payout_sent = true;
 							}
 						}).catch(err => {
@@ -98,6 +158,9 @@ export default {
 					return false;
 				}
 			});
+		},
+		changePayoutValue(value){
+			this.ruleForm.value = value.srcElement.value;
 		}
 	}
 };
@@ -134,7 +197,7 @@ input {
   color: gray;
 }
 a {
-  margin: 30px;
+  margin: 5px;
   border: 2px solid transparent;
   font-size: 1.5em;
   font-weight: 300;
@@ -161,4 +224,36 @@ button {
   box-shadow: var(--primary);
   cursor: pointer;
 }
+
+.slider {
+  -webkit-appearance: none;
+  width: 100%;
+  height: 12px;
+  border-radius: 5px;
+  background: #d3d3d3;
+  outline: none;
+  opacity: 0.7;
+  -webkit-transition: .2s;
+  transition: opacity .2s;
+  &:hover {
+    opacity: 1;
+  }
+  &::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: var(--primary-darken);
+    cursor: pointer;
+  }
+  &::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    border-radius: 50%;
+    background: #4CAF50;
+    cursor: pointer;
+  }
+}
+
 </style>
