@@ -50,12 +50,20 @@
         placeholder="Message"
       />
     </el-form-item>
-    <div v-if="payout_sent">
+    <div v-if="payout_sent && txhash.length !== 81">
       <p>
         Du kannst die Transaktion auf <a
           :href="'https://devnet.thetangle.org/address/' + ruleForm.address"
           target="_blank"
         >TheTange.org</a> verfolgen.
+      </p>
+    </div>
+    <div v-else-if="txhash.length === 81">
+      <p>
+        Transaktion gesendet: <a
+          :href="'https://devnet.thetangle.org/transaction/' + txhash"
+          target="_blank"
+        >devnet.thetangle.org</a>
       </p>
     </div>
     <div v-if="typeof ruleForm.errors !== 'undefined' && ruleForm.errors.length > 0">
@@ -82,6 +90,11 @@
 
 <script>
 import axios from 'axios';
+import io from 'socket.io-client';
+const socket = io('http://localhost:3001', {
+	path: '/payments/socket'
+});
+
 
 export default {
 	name: 'Form',
@@ -98,6 +111,7 @@ export default {
 		};
 		return {
 			payout_sent: false,
+			txhash: 'empty',
 			ruleForm: {
 				address: '',
 				value: 1,
@@ -108,6 +122,12 @@ export default {
 				address: [{ validator: validateAddress, trigger: 'blur' }]
 			}
 		};
+	},
+	created(){
+		let self = this;
+		socket.on('payouts', function (data) {
+			self.txhash = data.payout.txhash;
+		});
 	},
 	methods: {
 		send(formName) {
@@ -127,6 +147,7 @@ export default {
 								self.ruleForm.errors.push('Invalid address');
 								console.log('Server responded with invalid address');
 							} else if (data.address) {
+								socket.emit('storeClientInfo', { paymentOrPayoutId: response.data.id });
 								self.payout_sent = true;
 							}
 						}).catch(err => {
