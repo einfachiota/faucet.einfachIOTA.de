@@ -8,7 +8,7 @@
     label-position="top"
   >
     <el-form-item
-      label="IOTA Devnet Addresse"
+      label="IOTA Devnet Adresse"
       prop="address"
     >
       <el-input
@@ -19,7 +19,7 @@
       />
     </el-form-item>
     <el-form-item
-      label="IOTA Amount"
+      label="IOTA Menge"
       prop="value"
     >
       <input
@@ -40,14 +40,14 @@
       />
     </el-form-item>
     <el-form-item
-      label="Message"
+      label="Nachricht"
       prop="message"
     >
       <el-input
         v-model="ruleForm.message"
         type="text"
         autocomplete="off"
-        placeholder="Message"
+        placeholder="Nachricht"
       />
     </el-form-item>
     <div v-if="payout_sent && txhash.length !== 81">
@@ -90,21 +90,31 @@
 
 <script>
 import axios from 'axios';
+import {isValidChecksum, addChecksum} from '@iota/checksum';
+import {isTrytes} from '@iota/validators';
 import io from 'socket.io-client';
 const socket = io('http://localhost:3001', {
 	path: '/payments/socket'
 });
 
-
 export default {
 	name: 'Form',
 	data() {
 		var validateAddress = (rule, value, callback) => {
+			// var string = "'gFUQVDNGXBLFUOSMLGHCWWMJLCOOYAZESDFAEUMQNEXLG9FV9ASZFKLGFUDOAAJNOQQRFNOENACRGLJ9Z9999RHaegaf"
+			let string = value;
+			//accept any 81 tryte sting as address, only for devnet
+			let match = /[A-Z+9]{81}/.exec(string);
+			if (match) {
+				value = addChecksum(string.slice(match.index, match.index+81));
+			}
+			// value = value.trim();
 			if (!value) {
-				return callback(new Error('Bitte gib eine IOTA Devnet addresse an.'));
-			} else if (value === '') {
-				// TODO: replace "" with correct statement
-				callback(new Error('Dies ist keine gültige IOTA Addresse'));
+				return callback(new Error('Bitte gib eine IOTA Adresse an.'));
+			} else if (!isTrytes(value) || value.length != 90 && value.length != 81) {
+				callback(new Error('Dies ist keine gültige IOTA Adresse'));
+			} else if(value.length == 90 && !isValidChecksum(value)){
+				callback(new Error('Ungültige Checksumme'));
 			} else {
 				callback();
 			}
@@ -135,6 +145,11 @@ export default {
 				if (valid) {
 					console.log('submit!', this.ruleForm);
 					let self = this;
+					//accept any 81 tryte sting as address, only for devnet
+					let match = /[A-Z+9]{81}/.exec(this.ruleForm.address);
+					if (match) {
+						this.ruleForm.address = addChecksum(this.ruleForm.address.slice(match.index, match.index+81));
+					}
 					this.ruleForm.errors = [];
 					axios
 						.post('http://localhost:3001/pay_tokens', this.ruleForm)

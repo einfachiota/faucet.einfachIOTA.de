@@ -11,7 +11,7 @@
 
     <div class="section section-background">
       <div class="container">
-        <p>Total Tokens: {{ total_tokens }}</p>
+        <p>Verfügbare Tokens: {{ total_tokens }}</p>
         <Form />
       </div>
     </div>
