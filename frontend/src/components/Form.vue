@@ -101,14 +101,12 @@ export default {
 	name: 'Form',
 	data() {
 		var validateAddress = (rule, value, callback) => {
-			// var string = "'gFUQVDNGXBLFUOSMLGHCWWMJLCOOYAZESDFAEUMQNEXLG9FV9ASZFKLGFUDOAAJNOQQRFNOENACRGLJ9Z9999RHaegaf"
 			let string = value;
 			//accept any 81 tryte sting as address, only for devnet
 			let match = /[A-Z+9]{81}/.exec(string);
 			if (match) {
 				value = addChecksum(string.slice(match.index, match.index+81));
 			}
-			// value = value.trim();
 			if (!value) {
 				return callback(new Error('Bitte gib eine IOTA Adresse an.'));
 			} else if (!isTrytes(value) || value.length != 90 && value.length != 81) {
