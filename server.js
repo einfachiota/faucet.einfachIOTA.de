@@ -25,8 +25,8 @@ app.use(cors({
 }));
 app.use('/', express.static('frontend/dist'));
 
-app.get("/total_balance", function (req, res) {
-    console.log("total_balance called")
+app.get("/get_balance", function (req, res) {
+    console.log("get_balance called")
     paymentModule.getBalance().then((balance) => {
         console.log("balance", balance)
         res.send({ balance: balance});
@@ -72,7 +72,8 @@ app.post("/pay_tokens", function (req, res) {
 var options = {
     mount: '/payments',
     value: 1,
-    websockets: true
+    websockets: true,
+    api: true
     // ...
 }
 
