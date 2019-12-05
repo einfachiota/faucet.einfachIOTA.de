@@ -48,7 +48,7 @@ export default {
 			console.log('whaaaaaaaat?');
 			let self = this;
 			axios
-				.get('http://localhost:3001/total_balance')
+				.get('http://localhost:3001/get_balance')
 				.then(response => {
 					self.total_tokens = response.data.balance;
 				}).catch(err => {
