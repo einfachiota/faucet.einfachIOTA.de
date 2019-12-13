@@ -94,7 +94,7 @@ import {isValidChecksum, addChecksum} from '@iota/checksum';
 import {isTrytes} from '@iota/validators';
 import io from 'socket.io-client';
 const socket = io('http://localhost:3001', {
-	path: '/payments/socket'
+	path: '/iotapay/socket'
 });
 
 export default {
@@ -148,7 +148,7 @@ export default {
 					if (match) {
 						this.ruleForm.address = addChecksum(this.ruleForm.address.slice(match.index, match.index+81));
 					}
-					this.ruleForm.errors = [];
+          this.ruleForm.errors = [];
 					axios
 						.post('http://localhost:3001/pay_tokens', this.ruleForm)
 						.then(response => {

@@ -70,8 +70,6 @@ app.post("/pay_tokens", function (req, res) {
 })
 
 var options = {
-    mount: '/payments',
-    value: 1,
     websockets: true,
     api: true
     // ...
@@ -79,7 +77,7 @@ var options = {
 
 let server = paymentModule.createServer(app, options)
 
-// Start server with iota-payment module on '/custom'
+// Start server
 server.listen(port, function () {
     console.log(`Server started on port: ${port} `)
 })

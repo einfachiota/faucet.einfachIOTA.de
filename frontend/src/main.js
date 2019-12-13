@@ -9,7 +9,7 @@ import 'element-ui/lib/theme-chalk/index.css';
 
 import IotaPayment from 'vue-iota-payment';
 
-Vue.use(IotaPayment, { store, url: 'http://localhost:3001', path: '/payments' });
+Vue.use(IotaPayment, { store, url: 'http://localhost:3001', path: '/iotapay' });
 
 Vue.config.productionTip = false;
 
