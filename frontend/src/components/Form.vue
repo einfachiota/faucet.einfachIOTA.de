@@ -102,7 +102,7 @@ export default {
 	data() {
 		var validateAddress = (rule, value, callback) => {
 			let string = value;
-			//accept any 81 tryte sting as address, only for devnet
+			//accept any 81 tryte string as address, only for devnet
 			let match = /[A-Z+9]{81}/.exec(string);
 			if (match) {
 				value = addChecksum(string.slice(match.index, match.index+81));
