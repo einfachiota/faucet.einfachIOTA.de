@@ -75,7 +75,8 @@
       </p>
     </div>
     <el-form-item>
-      <el-button
+      <div v-if="maxAmountReached">Du hast die maximale Anzahl an Anfragen schon erreicht.</div>
+      <el-button v-else
         type="primary"
         @click="send('ruleForm')"
       >
@@ -118,7 +119,8 @@ export default {
 			}
 		};
 		return {
-			payout_sent: false,
+      payout_sent: false,
+      maxAmountReached: false,
 			txhash: 'empty',
 			ruleForm: {
 				address: '',
@@ -152,7 +154,12 @@ export default {
 					axios
 						.post(process.env.VUE_APP_URL+':3001/pay_tokens', this.ruleForm)
 						.then(response => {
-							console.log('response', response);
+              console.log('response', response);
+              //exit if max amount reached
+              if(response.data == 'Max amount of requests reached'){
+                this.maxAmountReached = true
+                return
+              }
 							let data = response.data;
 							if (!data) {
 								self.ruleForm.errors.push('Invalid data');

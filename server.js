@@ -8,7 +8,6 @@ const origins = process.env.allowed_origins.split(', ')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
 var allowedOrigins = origins || ['http://localhost:8080', 'http://localhost:5000', 'http://192.168.178.22:5000'];
 app.use(cors({
     origin: function (origin, callback) {
@@ -25,20 +24,35 @@ app.use(cors({
 }));
 app.use('/', express.static('frontend/dist'));
 
+//reduce internal getBalance requests to max 1 in a minute
+let lasttime = Date.now()-60000
+let balance = 0
+
 app.get("/get_balance", function (req, res) {
-    console.log("get_balance called")
-    paymentModule.getBalance().then((balance) => {
-        console.log("balance", balance)
+    if(Date.now()-60000 > lasttime){
+        lasttime = Date.now()
+        paymentModule.getBalance().then((balance) => {
+            balance = balance
+            console.log("Balance: "+balance);
+            res.send({ balance: balance});
+        }).catch(err => {
+            console.log("err", err)
+        })
+    } else {
         res.send({ balance: balance});
-    }).catch(err => {
-        console.log("err", err)
-    })
+    }
 })
+
+let ipaddresses = []
+let maxpayouts = 2
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
-    console.log(req.headers);
-    console.log(req.connection.remoteAddress);
+    if(ipaddresses.filter(x => x === req.connection.remoteAddress).length >= maxpayouts){
+        res.send('Max amount of requests reached');
+        return
+    }
+    ipaddresses.push(req.connection.remoteAddress)
     var address = req.body.address;
     var value = req.body.value || 0;
     var message = req.body.message || 'EINFACHIOTA';
