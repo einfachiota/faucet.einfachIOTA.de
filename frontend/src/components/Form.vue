@@ -93,7 +93,7 @@ import axios from 'axios';
 import {isValidChecksum, addChecksum} from '@iota/checksum';
 import {isTrytes} from '@iota/validators';
 import io from 'socket.io-client';
-const socket = io('http://localhost:3001', {
+const socket = io(process.env.VUE_APP_URL+':3001', {
 	path: '/iotapay/socket'
 });
 
@@ -150,7 +150,7 @@ export default {
 					}
           this.ruleForm.errors = [];
 					axios
-						.post('http://localhost:3001/pay_tokens', this.ruleForm)
+						.post(process.env.VUE_APP_URL+':3001/pay_tokens', this.ruleForm)
 						.then(response => {
 							console.log('response', response);
 							let data = response.data;
