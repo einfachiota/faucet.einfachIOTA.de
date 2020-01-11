@@ -4,12 +4,12 @@ var app = express()
 var bodyParser = require("body-parser");
 var cors = require('cors');
 const port = process.env.PORT
-
+const origins = process.env.allowed_origins.split(', ')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-var allowedOrigins = ['http://localhost:8080'];
+var allowedOrigins = origins || ['http://localhost:8080', 'http://localhost:5000', 'http://192.168.178.22:5000'];
 app.use(cors({
     origin: function (origin, callback) {
         // allow requests with no origin 
@@ -37,6 +37,8 @@ app.get("/get_balance", function (req, res) {
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
+    console.log(req.headers);
+    console.log(req.connection.remoteAddress);
     var address = req.body.address;
     var value = req.body.value || 0;
     var message = req.body.message || 'EINFACHIOTA';
