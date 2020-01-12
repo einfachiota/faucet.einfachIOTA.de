@@ -18,6 +18,9 @@ module.exports = {
             'always'
         ]
     },
+    "env": {
+        "node": true
+    },
     'extends': ['eslint:recommended', 'plugin:vue/recommended'],
     'parserOptions': {
         "parser": "babel-eslint",

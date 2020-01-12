@@ -2,10 +2,10 @@
   <div class="home">
     <div class="hero">
       <h1 class="heading">
-        IOTA {{network}} Faucet
+        IOTA {{ network }} Faucet
       </h1>
       <p class="sub-heading">
-        Sende einfach IOTA {{network}} Tokens!
+        Sende einfach IOTA {{ network }} Tokens!
       </p>
     </div>
 
@@ -18,7 +18,7 @@
     <div class="section">
       <div class="container">
         <h2>Fülle das Faucet</h2>
-        <iota-payment>Sende {{network}} IOTA</iota-payment>
+        <iota-payment>Sende {{ network }} IOTA</iota-payment>
       </div>
     </div>
   </div>
@@ -36,17 +36,15 @@ export default {
 	},
 	data() {
 		return {
-      total_tokens: '',
-      network: process.env.VUE_APP_NETWORK
+			total_tokens: '',
+			network: process.env.VUE_APP_NETWORK
 		};
 	},
 	created() {
-		console.log('what?');
 		this.getTotalTokens();
 	},
 	methods: {
 		getTotalTokens() {
-			console.log('whaaaaaaaat?');
 			let self = this;
 			axios
 				.get(process.env.VUE_APP_URL+':3001/get_balance')

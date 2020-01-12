@@ -52,11 +52,13 @@
     </el-form-item>
     <div v-if="payout_sent && txhash.length !== 81">
       <p>
-        Du kannst die Transaktion auf <a v-if="network == 'Devnet'"
+        Du kannst die Transaktion auf <a
+          v-if="network == 'Devnet'"
           :href="'https://devnet.thetangle.org/address/' + ruleForm.address"
           target="_blank"
         >TheTange.org</a>
-        <a v-else
+        <a
+          v-else
           :href="'https://thetangle.org/address/' + ruleForm.address"
           target="_blank"
         >TheTange.org</a> verfolgen.
@@ -64,11 +66,13 @@
     </div>
     <div v-else-if="txhash.length === 81">
       <p>
-        Transaktion gesendet: <a v-if="network == 'Devnet'"
+        Transaktion gesendet: <a
+          v-if="network == 'Devnet'"
           :href="'https://devnet.thetangle.org/transaction/' + txhash"
           target="_blank"
         >devnet.thetangle.org</a>
-        <a v-else
+        <a
+          v-else
           :href="'https://thetangle.org/transaction/' + txhash"
           target="_blank"
         >thetangle.org</a>
@@ -83,8 +87,14 @@
       </p>
     </div>
     <el-form-item>
-      <div v-if="cantsendpayout">{{ cantsendmsg }}</div>
-      <el-button v-else
+      <div v-if="error">
+        {{ cantsendmsg }}
+      </div>
+      <div v-if="cantsendpayout">
+        {{ cantsendmsg }}
+      </div>
+      <el-button
+        v-else
         type="primary"
         @click="send('ruleForm')"
       >
@@ -107,31 +117,38 @@ const socket = io(process.env.VUE_APP_URL+':3001', {
 });
 
 export default {
-  name: 'Form',
+	name: 'Form',
 	data() {
-		var validateAddress = (rule, value, callback) => {
-			let string = value;
+		var validateAddress = (rule, address, callback) => {
+			console.log('address:',address);
 			//accept any 81 tryte string as address, only for devnet
-			let match = /[A-Z+9]{81}/.exec(string);
-			if (match) {
-				value = addChecksum(string.slice(match.index, match.index+81));
+			if(this.network == 'Devnet'){
+				let match = /[A-Z+9]{81}/.exec(address);
+				address = addChecksum(address.slice(match.index, match.index+81));
+				this.ruleForm.address = address;
+			} else {
+				address = address.trim();
+				this.ruleForm.address = address.trim();
 			}
-			if (!value) {
+			console.log(address);
+
+			if (!address) {
 				return callback(new Error('Bitte gib eine IOTA Adresse an.'));
-			} else if (!isTrytes(value) || value.length != 90 && value.length != 81) {
+			} else if (!isTrytes(address) || address.length != 90 && address.length != 81) {
 				callback(new Error('Dies ist keine gültige IOTA Adresse'));
-			} else if(value.length == 90 && !isValidChecksum(value)){
+			} else if(address.length == 90 && !isValidChecksum(address)){
 				callback(new Error('Ungültige Checksumme'));
 			} else {
 				callback();
 			}
 		};
 		return {
-      payout_sent: false,
-      cantsendpayout: false,
-      cantsendmsg: 'Bitte versuch es später noch einmal.',
-      txhash: 'empty',
-      network: process.env.VUE_APP_NETWORK,
+			payout_sent: false,
+			cantsendpayout: false,
+			cantsendmsg: 'Bitte versuch es später noch einmal.',
+			txhash: 'empty',
+			network: process.env.VUE_APP_NETWORK,
+			error: false,
 			ruleForm: {
 				address: '',
 				value: 1,
@@ -155,22 +172,24 @@ export default {
 				if (valid) {
 					console.log('submit!', this.ruleForm);
 					let self = this;
-					//accept any 81 tryte sting as address, only for devnet
-					let match = /[A-Z+9]{81}/.exec(this.ruleForm.address);
-					if (match) {
-						this.ruleForm.address = addChecksum(this.ruleForm.address.slice(match.index, match.index+81));
-					}
-          this.ruleForm.errors = [];
+					this.ruleForm.errors = [];
 					axios
 						.post(process.env.VUE_APP_URL+':3001/pay_tokens', this.ruleForm)
 						.then(response => {
-              console.log('response', response);
-              //exit if max amount reached
-              if(response.data.type == 'cantsend'){
-                this.cantsendmsg = response.data.msg
-                this.cantsendpayout = true
-                return
-              }
+							console.log('response', response);
+							//exit if max amount reached
+							if(response.data.type == 'cantsend'){
+								this.cantsendmsg = response.data.msg;
+								this.cantsendpayout = true;
+								return;
+							}
+							if(response.data.type == 'error'){
+								this.cantsendmsg = response.data.msg;
+								this.error = true;
+								return;
+							} else {
+								this.error = false;
+							}
 							let data = response.data;
 							if (!data) {
 								self.ruleForm.errors.push('Invalid data');
