@@ -57,8 +57,6 @@ setInterval(()=>{
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
-    console.log("blocked ips", blockedIpAddresses);
-    console.log("ipaddresses", ipaddresses);
     ipaddresseslastminute.push(req.connection.remoteAddress)
     if (ipaddresseslastminute.filter(x => x === req.connection.remoteAddress).length >= maxPayoutRequestsPerMinute) {
         if(blockedIpAddresses.indexOf(req.connection.remoteAddress) == -1){
