@@ -45,11 +45,18 @@ app.get("/get_balance", function (req, res) {
 
 let ipaddresses = []
 let maxpayouts = 2
+let lastpayouttime = Date.now()-60000
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
+    //allow only one payout per minute
+    if(Date.now()-60000 < lastpayouttime){
+        res.send({type: 'cantsend', msg: 'Bitte versuch es später noch einmal.'});
+        return
+    }
+    //check ip address
     if(ipaddresses.filter(x => x === req.connection.remoteAddress).length >= maxpayouts){
-        res.send('Max amount of requests reached');
+        res.send({type: 'cantsend', msg: 'Du hast die maximale Anzahl an Anfragen schon erreicht.'});
         return
     }
     ipaddresses.push(req.connection.remoteAddress)
@@ -76,6 +83,7 @@ app.post("/pay_tokens", function (req, res) {
     paymentModule.payout.send(payoutObject)
         .then(result => {
             console.log("result", result)
+            lastpayouttime = Date.now()
             res.send(result);
         })
         .catch(err => {

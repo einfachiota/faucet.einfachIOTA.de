@@ -14,4 +14,5 @@ Create a .env in the frontend folder with an URL, all requests will be sent to i
 
 ```bash
 VUE_APP_URL=http://localhost
+VUE_APP_NETWORK=Devnet
 ```

@@ -8,14 +8,14 @@
     label-position="top"
   >
     <el-form-item
-      label="IOTA Devnet Adresse"
+      :label="`IOTA ${network} Addresse`"
       prop="address"
     >
       <el-input
         v-model="ruleForm.address"
         type="text"
         autocomplete="off"
-        placeholder="IOTA Devnet Addresse"
+        :placeholder="`IOTA ${network} Addresse`"
       />
     </el-form-item>
     <el-form-item
@@ -52,18 +52,26 @@
     </el-form-item>
     <div v-if="payout_sent && txhash.length !== 81">
       <p>
-        Du kannst die Transaktion auf <a
+        Du kannst die Transaktion auf <a v-if="network == 'Devnet'"
           :href="'https://devnet.thetangle.org/address/' + ruleForm.address"
+          target="_blank"
+        >TheTange.org</a>
+        <a v-else
+          :href="'https://thetangle.org/address/' + ruleForm.address"
           target="_blank"
         >TheTange.org</a> verfolgen.
       </p>
     </div>
     <div v-else-if="txhash.length === 81">
       <p>
-        Transaktion gesendet: <a
+        Transaktion gesendet: <a v-if="network == 'Devnet'"
           :href="'https://devnet.thetangle.org/transaction/' + txhash"
           target="_blank"
         >devnet.thetangle.org</a>
+        <a v-else
+          :href="'https://thetangle.org/transaction/' + txhash"
+          target="_blank"
+        >thetangle.org</a>
       </p>
     </div>
     <div v-if="typeof ruleForm.errors !== 'undefined' && ruleForm.errors.length > 0">
@@ -75,7 +83,7 @@
       </p>
     </div>
     <el-form-item>
-      <div v-if="maxAmountReached">Du hast die maximale Anzahl an Anfragen schon erreicht.</div>
+      <div v-if="cantsendpayout">{{ cantsendmsg }}</div>
       <el-button v-else
         type="primary"
         @click="send('ruleForm')"
@@ -99,7 +107,7 @@ const socket = io(process.env.VUE_APP_URL+':3001', {
 });
 
 export default {
-	name: 'Form',
+  name: 'Form',
 	data() {
 		var validateAddress = (rule, value, callback) => {
 			let string = value;
@@ -120,8 +128,10 @@ export default {
 		};
 		return {
       payout_sent: false,
-      maxAmountReached: false,
-			txhash: 'empty',
+      cantsendpayout: false,
+      cantsendmsg: 'Bitte versuch es später noch einmal.',
+      txhash: 'empty',
+      network: process.env.VUE_APP_NETWORK,
 			ruleForm: {
 				address: '',
 				value: 1,
@@ -156,8 +166,9 @@ export default {
 						.then(response => {
               console.log('response', response);
               //exit if max amount reached
-              if(response.data == 'Max amount of requests reached'){
-                this.maxAmountReached = true
+              if(response.data.type == 'cantsend'){
+                this.cantsendmsg = response.data.msg
+                this.cantsendpayout = true
                 return
               }
 							let data = response.data;
