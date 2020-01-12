@@ -16,6 +16,7 @@ socket_origins=http://localhost:* http://localhost:* http://127.0.0.1:* http://1
 allowed_origins=http://localhost:8080, http://localhost:5000, http://192.168.178.22:5000, http://192.168.178.22:8080
 maxPayoutsPerIP=2
 minPayoutIntervalinSeconds=60
+maxPayoutRequestsPerMinute=15
 ```
 
 Create a .env in the frontend folder with an URL, all requests will be sent to it
