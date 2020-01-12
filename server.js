@@ -44,19 +44,36 @@ app.get("/get_balance", function (req, res) {
 })
 
 let ipaddresses = []
-let maxpayouts = process.env.maxPayoutsPerIP
+let ipaddresseslastminute = []
+let blockedIpAddresses = []
+let maxPayoutsPerIP = process.env.maxPayoutsPerIP
+let maxPayoutRequestsPerMinute = process.env.maxPayoutRequestsPerMinute
 let minPayoutIntervalinSeconds = process.env.minPayoutIntervalinSeconds*1000
 let lastpayouttime = Date.now() - minPayoutIntervalinSeconds-10000
+//clear ipaddresseslastminute every minute
+setInterval(()=>{
+    ipaddresseslastminute = []
+}, 60000)
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
+    ipaddresseslastminute.push(req.connection.remoteAddress)
+    if (ipaddresseslastminute.filter(x => x === req.connection.remoteAddress).length >= maxPayoutRequestsPerMinute) {
+        if(blockedIpAddresses.indexOf(req.connection.remoteAddress) == -1){
+            blockedIpAddresses.push(req.connection.remoteAddress)
+        }
+        //delete in ipaddresses to decrease array size
+        ipaddresses = ipaddresses.filter(x => x !== req.connection.remoteAddress)
+        res.send({ type: 'cantsend', msg: 'Du hast die maximale Anzahl an Anfragen schon erreicht.' });
+        return
+    }
     //allow max one payout per time + max 10 seconds random
     if (Date.now() - minPayoutIntervalinSeconds - Math.floor(Math.random() *10000) < lastpayouttime) {
         res.send({ type: 'cantsend', msg: 'Bitte versuch es später noch einmal.' });
         return
     }
-    //check ip address
-    if (ipaddresses.filter(x => x === req.connection.remoteAddress).length >= maxpayouts) {
+    //check ip address is blocked
+    if(blockedIpAddresses.indexOf(req.connection.remoteAddress) != -1){
         res.send({ type: 'cantsend', msg: 'Du hast die maximale Anzahl an Anfragen schon erreicht.' });
         return
     }
@@ -84,6 +101,12 @@ app.post("/pay_tokens", function (req, res) {
         .then(result => {
             console.log("result", result)
             ipaddresses.push(req.connection.remoteAddress)
+            //check if maxpayouts is reached and push to blocked adresses
+            if (ipaddresses.filter(x => x === req.connection.remoteAddress).length >= maxPayoutsPerIP) {
+                blockedIpAddresses.push(req.connection.remoteAddress)
+                //delete in ipaddresses to decrease array size
+                ipaddresses = ipaddresses.filter(x => x !== req.connection.remoteAddress)
+            }
             lastpayouttime = Date.now()
             res.send(result);
         })
