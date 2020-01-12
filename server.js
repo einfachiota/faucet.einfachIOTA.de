@@ -57,9 +57,15 @@ setInterval(()=>{
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
+    console.log("blocked ips", blockedIpAddresses);
+    console.log("ipaddresses", ipaddresses);
     ipaddresseslastminute.push(req.connection.remoteAddress)
     if (ipaddresseslastminute.filter(x => x === req.connection.remoteAddress).length >= maxPayoutRequestsPerMinute) {
-        blockedIpAddresses.push(req.connection.remoteAddress)
+        if(blockedIpAddresses.indexOf(req.connection.remoteAddress) == -1){
+            blockedIpAddresses.push(req.connection.remoteAddress)
+        }
+        //delete in ipaddresses to decrease array size
+        ipaddresses = ipaddresses.filter(x => x !== req.connection.remoteAddress)
         res.send({ type: 'cantsend', msg: 'Du hast die maximale Anzahl an Anfragen schon erreicht.' });
         return
     }
