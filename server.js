@@ -4,12 +4,11 @@ var app = express()
 var bodyParser = require("body-parser");
 var cors = require('cors');
 const port = process.env.PORT
-
+const origins = process.env.allowed_origins.split(', ')
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
-
-var allowedOrigins = ['http://localhost:8080'];
+var allowedOrigins = origins || ['http://localhost:8080', 'http://localhost:5000', 'http://192.168.178.22:5000'];
 app.use(cors({
     origin: function (origin, callback) {
         // allow requests with no origin 
@@ -25,26 +24,50 @@ app.use(cors({
 }));
 app.use('/', express.static('frontend/dist'));
 
+//reduce internal getBalance requests to max 1 in a minute
+let lasttime = Date.now() - 60000
+let balance = 0
+
 app.get("/get_balance", function (req, res) {
-    console.log("get_balance called")
-    paymentModule.getBalance().then((balance) => {
-        console.log("balance", balance)
-        res.send({ balance: balance});
-    }).catch(err => {
-        console.log("err", err)
-    })
+    if (Date.now() - 60000 > lasttime) {
+        lasttime = Date.now()
+        paymentModule.getBalance().then((balance) => {
+            balance = balance
+            console.log("Balance: " + balance);
+            res.send({ balance: balance });
+        }).catch(err => {
+            console.log("err", err)
+        })
+    } else {
+        res.send({ balance: balance });
+    }
 })
+
+let ipaddresses = []
+let maxpayouts = process.env.maxPayoutsPerIP
+let minPayoutIntervalinSeconds = process.env.minPayoutIntervalinSeconds*1000
+let lastpayouttime = Date.now() - minPayoutIntervalinSeconds-10000
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
+    //allow max one payout per time + max 10 seconds random
+    if (Date.now() - minPayoutIntervalinSeconds - Math.floor(Math.random() *10000) < lastpayouttime) {
+        res.send({ type: 'cantsend', msg: 'Bitte versuch es später noch einmal.' });
+        return
+    }
+    //check ip address
+    if (ipaddresses.filter(x => x === req.connection.remoteAddress).length >= maxpayouts) {
+        res.send({ type: 'cantsend', msg: 'Du hast die maximale Anzahl an Anfragen schon erreicht.' });
+        return
+    }
     var address = req.body.address;
-    var value = req.body.value || 0;
+    var value = req.body.value || 0;
     var message = req.body.message || 'EINFACHIOTA';
     var tag = req.body.tag || 'EINFACHIOTA';
     console.log("address", address)
     console.log("value", value)
-    if(value > 1000){
-      value = 1000
+    if (value > 1000) {
+        value = 1000
     }
     let payoutObject = {
         //required
@@ -60,12 +83,13 @@ app.post("/pay_tokens", function (req, res) {
     paymentModule.payout.send(payoutObject)
         .then(result => {
             console.log("result", result)
+            ipaddresses.push(req.connection.remoteAddress)
+            lastpayouttime = Date.now()
             res.send(result);
         })
         .catch(err => {
             console.log(err)
-            res.send(err);
-
+            res.send({type: 'error', msg:err});
         })
 })
 
