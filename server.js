@@ -77,10 +77,11 @@ app.post("/pay_tokens", function (req, res) {
         res.send({ type: 'cantsend', msg: 'Du hast die maximale Anzahl an Anfragen schon erreicht.' });
         return
     }
-    var address = req.body.address;
-    var value = req.body.value || 0;
-    var message = req.body.message || 'EINFACHIOTA';
-    var tag = req.body.tag || 'EINFACHIOTA';
+    let address = req.body.address;
+    let value = req.body.value || 0;
+    //limit message length to 1 tx
+    let message = req.body.message.slice(0, 1093) || 'EINFACHIOTA';
+    let tag = req.body.tag || 'EINFACHIOTA';
     console.log("address", address)
     console.log("value", value)
     if (value > 1000) {

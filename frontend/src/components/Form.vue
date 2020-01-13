@@ -46,6 +46,7 @@
       <el-input
         v-model="ruleForm.message"
         type="text"
+        maxlength="1093"
         autocomplete="off"
         placeholder="Nachricht"
       />
