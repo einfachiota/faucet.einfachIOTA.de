@@ -46,6 +46,7 @@
       <el-input
         v-model="ruleForm.message"
         type="text"
+        maxlength="1093"
         autocomplete="off"
         placeholder="Nachricht"
       />
@@ -104,6 +105,13 @@
     <router-link to="about">
       Wie funktioniert das?
     </router-link>
+    <div>
+      <br />
+      IOTA ist gebührenfrei!
+      <br />
+      <br />
+      Daten können ohne den Besitz von IOTA Tokens versendet werden!
+    </div>
   </el-form>
 </template>
 
