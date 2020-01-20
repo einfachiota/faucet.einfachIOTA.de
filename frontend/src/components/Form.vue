@@ -120,7 +120,7 @@ import axios from 'axios';
 import {isValidChecksum, addChecksum} from '@iota/checksum';
 import {isTrytes} from '@iota/validators';
 import io from 'socket.io-client';
-const socket = io(process.env.VUE_APP_URL+':3001', {
+const socket = io(process.env.VUE_APP_URL, {
 	path: '/iotapay/socket'
 });
 
@@ -182,7 +182,7 @@ export default {
 					let self = this;
 					this.ruleForm.errors = [];
 					axios
-						.post(process.env.VUE_APP_URL+':3001/pay_tokens', this.ruleForm)
+						.post(process.env.VUE_APP_URL+'pay_tokens', this.ruleForm)
 						.then(response => {
 							console.log('response', response);
 							//exit if max amount reached
