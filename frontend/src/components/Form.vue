@@ -182,7 +182,7 @@ export default {
 					let self = this;
 					this.ruleForm.errors = [];
 					axios
-						.post(process.env.VUE_APP_URL+'pay_tokens', this.ruleForm)
+						.post(process.env.VUE_APP_URL+'/pay_tokens', this.ruleForm)
 						.then(response => {
 							console.log('response', response);
 							//exit if max amount reached

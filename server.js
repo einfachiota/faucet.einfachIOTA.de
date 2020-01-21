@@ -26,20 +26,20 @@ app.use('/', express.static('frontend/dist'));
 
 //reduce internal getBalance requests to max 1 in a minute
 let lasttime = Date.now() - 60000
-let balance = 0
+let lastbalance = 0
 
 app.get("/get_balance", function (req, res) {
     if (Date.now() - 60000 > lasttime) {
         lasttime = Date.now()
         paymentModule.getBalance().then((balance) => {
-            balance = balance
+            lastbalance = balance
             console.log("Balance: " + balance);
             res.send({ balance: balance });
         }).catch(err => {
             console.log("err", err)
         })
     } else {
-        res.send({ balance: balance });
+        res.send({ balance: lastbalance });
     }
 })
 

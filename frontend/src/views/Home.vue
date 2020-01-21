@@ -47,7 +47,7 @@ export default {
 		getTotalTokens() {
 			let self = this;
 			axios
-				.get(process.env.VUE_APP_URL+'get_balance')
+				.get(process.env.VUE_APP_URL+'/get_balance')
 				.then(response => {
 					self.total_tokens = response.data.balance;
 				}).catch(err => {
