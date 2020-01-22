@@ -157,6 +157,8 @@ export default {
 			}
 			if(value > 1000){
 				return callback(new Error('Maximum ist 1000i'));
+			} else {
+				callback();
 			}
 		};
 		return {
