@@ -17,6 +17,7 @@ allowed_origins=http://localhost:8080, http://localhost:5000, http://192.168.178
 dailymaxPayoutsPerIP=100
 minPayoutIntervalinSeconds=15
 maxPayoutRequestsPerMinute=7
+minPaymentIntervals=60
 ```
 
 Create a .env in the frontend folder with an URL, all requests will be sent to it
