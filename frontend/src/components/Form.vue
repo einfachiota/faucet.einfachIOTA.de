@@ -128,17 +128,18 @@ export default {
 	name: 'Form',
 	data() {
 		var validateAddress = (rule, address, callback) => {
-			console.log('address:',address);
 			//accept any 81 tryte string as address, only for devnet
 			if(this.network == 'Devnet'){
 				let match = /[A-Z+9]{81}/.exec(address);
+				if(match == null){
+					return callback(new Error('Bitte gib eine IOTA Adresse an.'));
+				}
 				address = addChecksum(address.slice(match.index, match.index+81));
 				this.ruleForm.address = address;
 			} else {
 				address = address.trim();
 				this.ruleForm.address = address.trim();
 			}
-			console.log(address);
 
 			if (!address) {
 				return callback(new Error('Bitte gib eine IOTA Adresse an.'));
@@ -148,6 +149,14 @@ export default {
 				callback(new Error('Ungültige Checksumme'));
 			} else {
 				callback();
+			}
+		};
+		let validateValue = (rule, value, callback) => {
+			if(isNaN(value)){
+				return callback(new Error('Bitte gib eine Nummer als Wert an'));
+			}
+			if(value > 1000){
+				return callback(new Error('Maximum ist 1000i'));
 			}
 		};
 		return {
@@ -164,7 +173,8 @@ export default {
 				errors: []
 			},
 			rules: {
-				address: [{ validator: validateAddress, trigger: 'blur' }]
+				address: [{ validator: validateAddress, trigger: 'blur' }],
+				value: [{ validator: validateValue, trigger: 'blur' }]
 			}
 		};
 	},

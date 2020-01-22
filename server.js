@@ -46,7 +46,7 @@ app.get("/get_balance", function (req, res) {
 let ipaddresses = []
 let ipaddresseslastminute = []
 let blockedIpAddresses = []
-let maxPayoutsPerIP = process.env.maxPayoutsPerIP
+let dailymaxPayoutsPerIP = process.env.dailymaxPayoutsPerIP
 let maxPayoutRequestsPerMinute = process.env.maxPayoutRequestsPerMinute
 let minPayoutIntervalinSeconds = process.env.minPayoutIntervalinSeconds*1000
 let lastpayouttime = Date.now() - minPayoutIntervalinSeconds-10000
@@ -54,6 +54,11 @@ let lastpayouttime = Date.now() - minPayoutIntervalinSeconds-10000
 setInterval(()=>{
     ipaddresseslastminute = []
 }, 60000)
+//clear blockedIP every 24h
+setInterval(()=>{
+    blockedIpAddresses = []
+}, 86400000)
+
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
@@ -95,7 +100,7 @@ app.post("/pay_tokens", function (req, res) {
         message: message,
         tag: tag,
         //indexes for input addresses, only in special cases required
-        // starIndex: 0,
+        // startIndex: 0,
         // endIndex: 1
     }
     paymentModule.payout.send(payoutObject)
@@ -103,7 +108,7 @@ app.post("/pay_tokens", function (req, res) {
             console.log("result", result)
             ipaddresses.push(req.connection.remoteAddress)
             //check if maxpayouts is reached and push to blocked adresses
-            if (ipaddresses.filter(x => x === req.connection.remoteAddress).length >= maxPayoutsPerIP) {
+            if (ipaddresses.filter(x => x === req.connection.remoteAddress).length >= dailymaxPayoutsPerIP) {
                 blockedIpAddresses.push(req.connection.remoteAddress)
                 //delete in ipaddresses to decrease array size
                 ipaddresses = ipaddresses.filter(x => x !== req.connection.remoteAddress)
