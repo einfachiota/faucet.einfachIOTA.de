@@ -101,6 +101,7 @@
       <el-button
         type="primary"
         :disabled="clicked"
+        :class="{'clicked': clicked}"
         @click="send('ruleForm')"
       >
         <i18n path="send" />!
@@ -318,6 +319,10 @@ button {
   text-decoration: none;
   box-shadow: var(--primary);
   cursor: pointer;
+}
+
+.clicked {
+  background: #801b99 !important;
 }
 
 .slider {
