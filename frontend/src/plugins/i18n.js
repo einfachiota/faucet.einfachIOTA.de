@@ -21,6 +21,7 @@ export const i18n = new VueI18n({
 			transaction_address1: '.',
 			transaction_sent: 'Transaction sent:',
 			data_without_token: 'Data can be sent without the possession of IOTA token!',
+			send: 'Send',
 			form: {
 				address_label: 'address',
 				amount: 'amount',
@@ -73,6 +74,7 @@ export const i18n = new VueI18n({
 			transaction_address1: 'verfolgen.',
 			transaction_sent: 'Transaktion gesendet:',
 			data_without_token: 'Daten können ohne den Besitz von IOTA Token versendet werden!',
+			send: 'Sende',
 			form: {
 				address_label: 'Adresse',
 				amount: 'Menge',

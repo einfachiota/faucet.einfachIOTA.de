@@ -84,10 +84,10 @@
     </div>
     <div v-if="typeof ruleForm.errors !== 'undefined' && ruleForm.errors.length > 0">
       <p
-        v-for="(error, index) in ruleForm.errors"
+        v-for="(err, index) in ruleForm.errors"
         :key="index"
       >
-        {{ error }}
+        {{ err }}
       </p>
     </div>
     <el-form-item>
@@ -102,7 +102,7 @@
         type="primary"
         @click="send('ruleForm')"
       >
-        Sende!
+        <i18n path="send" />!
       </el-button>
     </el-form-item>
     <router-link to="about">

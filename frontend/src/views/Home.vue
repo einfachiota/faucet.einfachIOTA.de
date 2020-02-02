@@ -24,7 +24,10 @@
         <h2>
           <i18n path="fill" />
         </h2>
-        <iota-payment>Sende {{ network }} IOTA</iota-payment>
+        <iota-payment>
+          <i18n path="send" />
+          {{ network }} IOTA
+        </iota-payment>
       </div>
     </div>
   </div>
