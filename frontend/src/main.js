@@ -6,6 +6,7 @@ import store from './store';
 
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
+import { i18n } from './plugins/i18n';
 
 import IotaPayment from 'vue-iota-payment';
 
@@ -17,6 +18,7 @@ Vue.use(ElementUI);
 
 
 new Vue({
+	i18n,
 	router,
 	store,
 	render: h => h(App)

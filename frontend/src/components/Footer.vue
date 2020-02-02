@@ -2,76 +2,104 @@
   <div class="footer">
     <div class="row">
       <div class="footer-main">
-        <router-link
-          to="/"
+        <a
+          href="https://www.einfachiota.de/#/"
           class="footer-logo"
           exact-active-class="active"
+          target="_blank"
         >
           <img
             alt="einfachIOTA"
             class="logo"
             src="../assets/logo.svg"
           >
-        </router-link>
-        <p>IOTA einfach erklärt.</p>
-        <p>Unsere Aufgabe ist es, deutschsprachigen Inhalt rund um IOTA bereitzustellen und IOTA in einfacher Sprache zu erklären.</p>
+        </a>
       </div>
       <div class="footer-main">
-        <h4>einfachIOTA.de</h4>
+        <h4>
+          <i18n path="footer.col_1.title" />
+        </h4>
         <div class="divider" />
         <a
-          href="https://www.einfachiota.de/#/news"
+          href="https://www.einfachiota.de/"
           target="_blank"
           class="footer-main-link"
-        >Neuigkeiten</a>
+        >
+          <i18n path="footer.col_1.link1" />
+        </a>
         <a
-          href="https://www.einfachiota.de/#/knowledge"
+          href="https://blog.einfachiota.de/"
           target="_blank"
           class="footer-main-link"
-        >Wissen</a>
+        >
+          <i18n path="footer.col_1.link2" />
+        </a>
         <a
-          href="https://www.einfachiota.de/#/projects"
+          href="https://magazin.einfachiota.de/"
           target="_blank"
           class="footer-main-link"
-        >Projekte</a>
+        >
+          <i18n path="footer.col_1.link3" />
+        </a>
       </div>
       <div class="footer-main">
-        <h4>Partner</h4>
+        <h4>
+          <i18n path="footer.col_2.title" />
+        </h4>
         <div class="divider" />
         <a
-          href="https://powsrv.io/"
+          href="https://tanglebay.org/"
           target="_blank"
           class="footer-main-link"
-        >powsrv.io</a>
+        >
+          <i18n path="footer.col_2.link1" />
+        </a>
+
         <a
-          href="https://tanglebay.org/forum/"
+          href="https://iotashops.com/"
           target="_blank"
           class="footer-main-link"
-        >Tanglebay.org</a>
+        >
+          <i18n path="footer.col_2.link2" />
+        </a>
       </div>
       <div class="footer-main">
-        <h4>IOTA</h4>
+        <h4>
+          <i18n path="footer.col_3.title" />
+        </h4>
         <div class="divider" />
         <a
           href="https://www.iota.org"
           target="_blank"
           class="footer-main-link"
-        >Offizielle Webseite</a>
+        >
+          <i18n path="footer.col_3.link1" />
+        </a>
         <a
           href="https://ecosystem.iota.org"
           target="_blank"
           class="footer-main-link"
-        >Ökosystem</a>
+        >
+          <i18n path="footer.col_3.link2" />
+        </a>
         <a
           href="https://blog.iota.org"
           target="_blank"
           class="footer-main-link"
-        >Blog</a>
+        >
+          <i18n path="footer.col_3.link3" />
+        </a>
       </div>
     </div>
     <div class="row footer-bottom">
       <div class="footer-bottom-col">
-        © einfachIOTA
+        <i18n path="footer.copyright" />
+        <span class="heart">&#10084;</span> by
+        <a
+          href="https://www.einfachiota.de/"
+          target="_blank"
+          class="footer-link"
+        >einfachIOTA</a>
       </div>
       <div class="footer-bottom-col">
         <a
@@ -90,23 +118,72 @@
           class="footer-main-link"
         >Github</a>
       </div>
+
       <div class="footer-bottom-col">
-        <router-link
-          to="imprint"
+        <div
+          class="lang"
+          @click="switchLanguage()"
+        >
+          <!-- <span>Switch Language </span> -->
+          <img
+            v-if="this.$i18n.locale != 'de'"
+            alt="lang"
+            class="logo"
+            src="../plugins/ger-flag.png"
+            contain
+            height="20rm"
+          >
+          <img
+            v-else
+            alt="lang"
+            class="logo"
+            src="../plugins/us-flag.png"
+            contain
+            height="20rm"
+          >
+        </div>
+      </div>
+
+      <div class="footer-bottom-col">
+        <a
+          href="https://www.einfachiota.de/#/imprint"
+          target="_blank"
           class="footer-main-link"
         >
-          Impressum
-        </router-link>
-        <router-link
-          to="privacy"
+          <i18n path="footer.imprint" />
+        </a>
+        <a
+          href="https://www.einfachiota.de/#/privacy"
+          target="_blank"
           class="footer-main-link"
         >
-          Datenschutz
-        </router-link>
+          <i18n path="footer.privacy" />
+        </a>
       </div>
     </div>
   </div>
 </template>
+
+<script>
+export default {
+	mounted() {
+		console.log('mounted');
+		let userLang = navigator.language || navigator.userLanguage;
+		if (userLang.slice(0, 2) == 'de') {
+			this.$i18n.locale = 'de';
+		}
+	},
+	methods: {
+		switchLanguage() {
+			if (this.$i18n.locale == 'de') {
+				this.$i18n.locale = 'en';
+			} else {
+				this.$i18n.locale = 'de';
+			}
+		}
+	}
+};
+</script>
 
 <style lang="scss">
 .footer {
@@ -117,6 +194,9 @@
   text-align: center;
   border-top: 5px solid var(--primary);
   color: var(--dark);
+  .heart {
+    color: red;
+  }
   .row {
     display: flex;
     justify-content: space-between;
@@ -130,7 +210,7 @@
       margin-right: 0;
     }
     .logo {
-      height: 100px;
+      height: 150px;
     }
     h4 {
       font-size: 20px;
@@ -154,7 +234,6 @@
       }
     }
   }
-
   .footer-bottom {
     padding: 15px 50px;
     margin: 0 -50px;
@@ -169,6 +248,15 @@
         &:last-child {
           margin-right: 0;
         }
+      }
+    }
+    .footer-link {
+      color: rgba(0, 0, 0, 0.75);
+      text-decoration: none;
+      transition: color 200ms ease-in-out;
+      font-size: 1.2em;
+      &:hover {
+        color: var(--primary);
       }
     }
     .footer-main-link {

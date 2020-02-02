@@ -5,19 +5,25 @@
         IOTA {{ network }} Faucet
       </h1>
       <p class="sub-heading">
-        Sende einfach IOTA {{ network }} Tokens!
+        <i18n path="subheadline" />
+        {{ network }} Tokens!
       </p>
     </div>
 
     <div class="section section-background">
       <div class="container">
-        <p>Verfügbare Tokens: {{ total_tokens }}</p>
+        <p>
+          <i18n path="available_tokens" />
+          {{ total_tokens }}
+        </p>
         <Form />
       </div>
     </div>
     <div class="section">
       <div class="container">
-        <h2>Fülle das Faucet</h2>
+        <h2>
+          <i18n path="fill" />
+        </h2>
         <iota-payment>Sende {{ network }} IOTA</iota-payment>
       </div>
     </div>
@@ -47,10 +53,11 @@ export default {
 		getTotalTokens() {
 			let self = this;
 			axios
-				.get(process.env.VUE_APP_URL+'/get_balance')
+				.get(process.env.VUE_APP_URL + '/get_balance')
 				.then(response => {
 					self.total_tokens = response.data.balance;
-				}).catch(err => {
+				})
+				.catch(err => {
 					console.log('err', err);
 				});
 		}
@@ -109,7 +116,7 @@ export default {
 }
 @media only screen and (max-width: 740px) {
   .hero {
-      padding-top: 40px;
+    padding-top: 40px;
   }
   .headline-wrapper {
     flex-wrap: wrap;
@@ -117,9 +124,8 @@ export default {
       margin-bottom: 20px;
     }
   }
-  .btn-social  {
-      margin-bottom: 5px !important;
+  .btn-social {
+    margin-bottom: 5px !important;
   }
 }
-
 </style>
