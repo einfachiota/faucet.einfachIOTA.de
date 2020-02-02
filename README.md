@@ -15,7 +15,7 @@ debug=basic
 socket_origins=http://localhost:* http://localhost:* http://127.0.0.1:* http://192.168.178.22:* http://192.168.178.22:* https://faucet.einfachiota.de:*
 allowed_origins=http://localhost:8080, http://localhost:5000, http://192.168.178.22:5000, http://192.168.178.22:8080, https://faucet.einfachiota.de
 dailymaxPayoutsPerIP=100
-minPayoutIntervalinSeconds=15
+minPayoutIntervalinSeconds=7
 maxPayoutRequestsPerMinute=7
 minPaymentIntervals=60
 ```

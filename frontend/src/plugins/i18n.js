@@ -22,11 +22,19 @@ export const i18n = new VueI18n({
 			transaction_sent: 'Transaction sent:',
 			data_without_token: 'Data can be sent without the possession of IOTA token!',
 			send: 'Send',
+			transaction_request_sent: 'Transaction is being sent...',
 			form: {
 				address_label: 'address',
 				amount: 'amount',
 				message: 'Message',
 				message_placeholder: 'Message (optional)',
+				err: {
+					add_address: 'Please enter an IOTA address.',
+					inv_address: 'This is not a valid IOTA address.',
+					inv_checksum: 'Invalid checksum!',
+					inv_value: 'Please enter a number as value.',
+					max_val: 'Maximum is 1000i!'
+				}
 			},
 			about: {
 				heading: 'The IOTA faucet explained',
@@ -75,11 +83,19 @@ export const i18n = new VueI18n({
 			transaction_sent: 'Transaktion gesendet:',
 			data_without_token: 'Daten können ohne den Besitz von IOTA Token versendet werden!',
 			send: 'Sende',
+			transaction_request_sent: 'Transaktion wird gesendet...',
 			form: {
 				address_label: 'Adresse',
 				amount: 'Menge',
 				message: 'Nachricht',
 				message_placeholder: 'Nachricht (optional)',
+				err: {
+					add_address: 'Bitte gib eine IOTA Adresse an.',
+					inv_address: 'Dies ist keine gültige IOTA Adresse.',
+					inv_checksum: 'Ungültige Checksumme!',
+					inv_value: 'Bitte gib eine Zahl als Wert an.',
+					max_val: 'Maximum ist 1000i!'
+				}
 			},
 			about: {
 				heading: 'Das IOTA Faucet erklärt',

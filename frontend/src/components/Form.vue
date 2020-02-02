@@ -53,7 +53,7 @@
     </el-form-item>
     <div v-if="payout_sent && txhash.length !== 81">
       <p>
-        <i18n path="transaction_address" />
+        <!-- <i18n path="transaction_address" />
         <a
           v-if="network == 'Devnet'"
           :href="'https://devnet.thetangle.org/address/' + ruleForm.address"
@@ -64,7 +64,8 @@
           :href="'https://thetangle.org/address/' + ruleForm.address"
           target="_blank"
         >TheTange.org</a>
-        <i18n path="transaction_address1" />
+        <i18n path="transaction_address1" />-->
+        <i18n path="transaction_request_sent" />
       </p>
     </div>
     <div v-else-if="txhash.length === 81">
@@ -98,8 +99,8 @@
         {{ cantsendmsg }}
       </div>
       <el-button
-        v-else
         type="primary"
+        :disabled="clicked"
         @click="send('ruleForm')"
       >
         <i18n path="send" />!
@@ -135,7 +136,7 @@ export default {
 			if (this.network == 'Devnet') {
 				let match = /[A-Z+9]{81}/.exec(address);
 				if (match == null) {
-					return callback(new Error('Bitte gib eine IOTA Adresse an.'));
+					return callback(new Error(this.$i18n.t('form.err.add_address')));
 				}
 				address = addChecksum(address.slice(match.index, match.index + 81));
 				this.ruleForm.address = address;
@@ -145,24 +146,24 @@ export default {
 			}
 
 			if (!address) {
-				return callback(new Error('Bitte gib eine IOTA Adresse an.'));
+				return callback(new Error(this.$i18n.t('form.err.inv_address')));
 			} else if (
 				!isTrytes(address) ||
         (address.length != 90 && address.length != 81)
 			) {
-				callback(new Error('Dies ist keine gültige IOTA Adresse'));
+				callback(new Error(this.$i18n.t('form.err.inv_address')));
 			} else if (address.length == 90 && !isValidChecksum(address)) {
-				callback(new Error('Ungültige Checksumme'));
+				callback(new Error(this.$i18n.t('form.err.inv_checksum')));
 			} else {
 				callback();
 			}
 		};
 		let validateValue = (rule, value, callback) => {
 			if (isNaN(value)) {
-				return callback(new Error('Bitte gib eine Nummer als Wert an'));
+				return callback(new Error(this.$i18n.t('form.err.inv_value')));
 			}
 			if (value > 1000) {
-				return callback(new Error('Maximum ist 1000i'));
+				return callback(new Error(this.$i18n.t('form.err.max_val')));
 			} else {
 				callback();
 			}
@@ -170,10 +171,11 @@ export default {
 		return {
 			payout_sent: false,
 			cantsendpayout: false,
-			cantsendmsg: 'Bitte versuch es später noch einmal.',
+			cantsendmsg: 'Pls try again later.',
 			txhash: 'empty',
 			network: process.env.VUE_APP_NETWORK,
 			error: false,
+			clicked: false,
 			ruleForm: {
 				address: '',
 				value: 1,
@@ -190,12 +192,17 @@ export default {
 		let self = this;
 		socket.on('payouts', function(data) {
 			self.txhash = data.payout.txhash;
+			self.clicked = false;
 		});
 	},
 	methods: {
 		send(formName) {
 			this.$refs[formName].validate(valid => {
 				if (valid) {
+					//reset status
+					this.txhash = 'empty';
+					this.payout_sent = false;
+					this.clicked = true;
 					console.log('submit!', this.ruleForm);
 					let self = this;
 					this.ruleForm.errors = [];
@@ -207,11 +214,17 @@ export default {
 							if (response.data.type == 'cantsend') {
 								this.cantsendmsg = response.data.msg;
 								this.cantsendpayout = true;
+								setTimeout(() => {
+									this.clicked = false;
+								}, 2000);
 								return;
+							} else {
+								this.cantsendpayout = false;
 							}
 							if (response.data.type == 'error') {
 								this.cantsendmsg = response.data.msg;
 								this.error = true;
+								this.clicked = false;
 								return;
 							} else {
 								this.error = false;
@@ -219,9 +232,11 @@ export default {
 							let data = response.data;
 							if (!data) {
 								self.ruleForm.errors.push('Invalid data');
+								this.clicked = false;
 							} else if (data === 'Invalid address') {
 								self.ruleForm.errors.push('Invalid address');
 								console.log('Server responded with invalid address');
+								this.clicked = false;
 							} else if (data.address) {
 								socket.emit('storeClientInfo', {
 									paymentOrPayoutId: response.data.id
@@ -231,6 +246,7 @@ export default {
 						})
 						.catch(err => {
 							console.log('err', err);
+							this.clicked = false;
 						});
 				} else {
 					console.log('error submit!!');
