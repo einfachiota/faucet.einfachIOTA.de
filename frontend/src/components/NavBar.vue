@@ -32,6 +32,7 @@
       class="nav-menu"
     >
       <router-link
+        to="/"
         class="nav-item"
         active-class="active"
         @click.native="navStateOpen = false"
@@ -48,12 +49,6 @@ export default {
 		return {
 			navStateOpen: false
 		};
-	},
-	mounted() {
-		let userLang = navigator.language || navigator.userLanguage;
-		if (userLang.slice(0, 2) == 'de') {
-			this.$i18n.locale = 'de';
-		}
 	},
 	methods: {
 		toggleNav() {

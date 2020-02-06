@@ -171,6 +171,8 @@ export default {
 		let userLang = navigator.language || navigator.userLanguage;
 		if (userLang.slice(0, 2) == 'de') {
 			this.$i18n.locale = 'de';
+		} else {
+			this.$i18n.locale = 'en';
 		}
 	},
 	methods: {
