@@ -59,7 +59,7 @@ export const i18n = new VueI18n({
 				},
 				col_3: {
 					title: 'IOTA',
-					link1: 'Offcial Website',
+					link1: 'Official Website',
 					link2: 'Ecosystem',
 					link3: 'Blog'
 				},
