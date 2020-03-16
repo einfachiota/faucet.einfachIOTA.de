@@ -73,14 +73,14 @@
         <i18n path="transaction_sent" />
         <a
           v-if="network == 'Devnet'"
-          :href="'https://devnet.thetangle.org/transaction/' + txhash"
+          :href="tangleExporer + '/transaction/' + txhash"
           target="_blank"
-        >devnet.thetangle.org</a>
+        >{{tangleExporer}}</a>
         <a
           v-else
-          :href="'https://thetangle.org/transaction/' + txhash"
+          :href="tangleExporer + '/transaction/' + txhash"
           target="_blank"
-        >thetangle.org</a>
+        >{{tangleExporer}}</a>
       </p>
     </div>
     <div v-if="typeof ruleForm.errors !== 'undefined' && ruleForm.errors.length > 0">
@@ -175,6 +175,7 @@ export default {
 			cantsendmsg: 'Pls try again later.',
 			txhash: 'empty',
 			network: process.env.VUE_APP_NETWORK,
+			tangleExporer: process.env.VUE_APP_TANGLE_EXPLORER,
 			error: false,
 			clicked: false,
 			ruleForm: {
