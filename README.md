@@ -18,6 +18,7 @@ dailymaxPayoutsPerIP=100
 minPayoutIntervalinSeconds=7
 maxPayoutRequestsPerMinute=7
 minPaymentIntervals=60
+maxPayoutValue=1000
 ```
 
 Create a .env in the frontend folder with an URL, all requests will be sent to it

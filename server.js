@@ -5,6 +5,10 @@ var bodyParser = require("body-parser");
 var cors = require('cors');
 const port = process.env.PORT
 const origins = process.env.allowed_origins.split(', ')
+let maxPayoutValue = process.env.maxPayoutValue
+if(Number.isInteger(maxPayoutValue)){
+    throw 'Invalid maxPayoutValue in .env'
+}
 
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
@@ -89,8 +93,8 @@ app.post("/pay_tokens", function (req, res) {
     let tag = req.body.tag || 'EINFACHIOTA';
     console.log("address", address)
     console.log("value", value)
-    if (value > 1000) {
-        value = 1000
+    if (value > process.env.maxPayoutValue) {
+        value = process.env.maxPayoutValue
     }
     let payoutObject = {
         //required
@@ -103,7 +107,7 @@ app.post("/pay_tokens", function (req, res) {
         // startIndex: 0,
         // endIndex: 1
     }
-    paymentModule.payout.send(payoutObject)
+    paymentModule.sendPayout(payoutObject)
         .then(result => {
             console.log("result", result)
             ipaddresses.push(req.connection.remoteAddress)
