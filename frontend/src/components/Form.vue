@@ -27,7 +27,7 @@
         type="range"
         min="0"
         :max="maxValue"
-        value="10"
+        value="0"
         class="slider"
         @input="changePayoutValue"
         @change="changePayoutValue"
@@ -36,7 +36,7 @@
         v-model="ruleForm.value"
         type="number"
         autocomplete="off"
-        placeholder="1"
+        placeholder="0"
       />
     </el-form-item>
     <el-form-item
@@ -75,12 +75,12 @@
           v-if="network == 'Devnet'"
           :href="tangleExporer + '/transaction/' + txhash"
           target="_blank"
-        >{{tangleExporer}}</a>
+        >{{ tangleExporer }}</a>
         <a
           v-else
           :href="tangleExporer + '/transaction/' + txhash"
           target="_blank"
-        >{{tangleExporer}}</a>
+        >{{ tangleExporer }}</a>
       </p>
     </div>
     <div v-if="typeof ruleForm.errors !== 'undefined' && ruleForm.errors.length > 0">
@@ -163,8 +163,8 @@ export default {
 			if (isNaN(value)) {
 				return callback(new Error(this.$i18n.t('form.err.inv_value')));
 			}
-			if (value > process.env.VUE_APP_MAXVALUE) {
-				return callback(new Error(this.$i18n.t('form.err.max_val')));
+			if (parseInt(value) > this.maxValue) {
+				return callback(new Error(this.$i18n.t('form.err.max_val')+this.maxValue));
 			} else {
 				callback();
 			}
@@ -175,13 +175,13 @@ export default {
 			cantsendmsg: 'Pls try again later.',
 			txhash: 'empty',
 			network: process.env.VUE_APP_NETWORK,
-      tangleExporer: process.env.VUE_APP_TANGLE_EXPLORER,
-      maxValue: process.env.VUE_APP_MAXVALUE,
+			tangleExporer: process.env.VUE_APP_TANGLE_EXPLORER,
+			maxValue: process.env.VUE_APP_MAXVALUE,
 			error: false,
 			clicked: false,
 			ruleForm: {
 				address: '',
-				value: 1,
+				value: 0,
 				message: '',
 				errors: []
 			},
