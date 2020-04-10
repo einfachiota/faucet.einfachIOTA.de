@@ -26,7 +26,7 @@
         id="myRange"
         type="range"
         min="0"
-        max="1000"
+        :max="maxValue"
         value="10"
         class="slider"
         @input="changePayoutValue"
@@ -163,7 +163,7 @@ export default {
 			if (isNaN(value)) {
 				return callback(new Error(this.$i18n.t('form.err.inv_value')));
 			}
-			if (value > 1000) {
+			if (value > process.env.VUE_APP_MAXVALUE) {
 				return callback(new Error(this.$i18n.t('form.err.max_val')));
 			} else {
 				callback();
@@ -175,7 +175,8 @@ export default {
 			cantsendmsg: 'Pls try again later.',
 			txhash: 'empty',
 			network: process.env.VUE_APP_NETWORK,
-			tangleExporer: process.env.VUE_APP_TANGLE_EXPLORER,
+      tangleExporer: process.env.VUE_APP_TANGLE_EXPLORER,
+      maxValue: process.env.VUE_APP_MAXVALUE,
 			error: false,
 			clicked: false,
 			ruleForm: {

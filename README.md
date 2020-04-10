@@ -27,4 +27,5 @@ Choose between Devnet and Mainnet
 ```bash
 VUE_APP_URL=https://faucet.einfachiota.de
 VUE_APP_NETWORK=Devnet
+VUE_APP_MAXVALUE=1000
 ```
