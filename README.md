@@ -6,14 +6,12 @@ Example:
 
 ```bash
 SEED='81TrytesSeed'
-IOTANODE='https://nodes.devnet.thetangle.org'
-FALLBACKNODE='https://nodes.devnet.iota.org'
-MAX_PAYMENT_TIME=4320
+iotaNodes=["https://nodes.devnet.thetangle.org:443", "https://nodes.devnet.iota.org:443"]
 PORT=3001
 VALUE=1
 debug=basic
-socket_origins=http://localhost:* http://localhost:* http://127.0.0.1:* http://192.168.178.22:* http://192.168.178.22:* https://faucet.einfachiota.de:*
-allowed_origins=http://localhost:8080, http://localhost:5000, http://192.168.178.22:5000, http://192.168.178.22:8080, https://faucet.einfachiota.de
+socketOrigins=['http://localhost:*', 'http://127.0.0.1:*', 'https://faucet.einfachiota.de:*']
+allowed_origins=http://localhost:8080, http://localhost:5000, https://faucet.einfachiota.de
 dailymaxPayoutsPerIP=100
 minPayoutIntervalinSeconds=7
 maxPayoutRequestsPerMinute=7
@@ -28,4 +26,5 @@ Choose between Devnet and Mainnet
 VUE_APP_URL=https://faucet.einfachiota.de
 VUE_APP_NETWORK=Devnet
 VUE_APP_MAXVALUE=1000
+VUE_APP_TANGLE_EXPLORER=https://comnet.thetangle.org
 ```

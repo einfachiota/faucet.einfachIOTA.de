@@ -33,7 +33,7 @@ export const i18n = new VueI18n({
 					inv_address: 'This is not a valid IOTA address.',
 					inv_checksum: 'Invalid checksum!',
 					inv_value: 'Please enter a number as value.',
-					max_val: 'Maximum is 1000i!'
+					max_val: 'Maximum is '
 				}
 			},
 			about: {
@@ -94,7 +94,7 @@ export const i18n = new VueI18n({
 					inv_address: 'Dies ist keine gültige IOTA Adresse.',
 					inv_checksum: 'Ungültige Checksumme!',
 					inv_value: 'Bitte gib eine Zahl als Wert an.',
-					max_val: 'Maximum ist 1000i!'
+					max_val: 'Maximum ist '
 				}
 			},
 			about: {
