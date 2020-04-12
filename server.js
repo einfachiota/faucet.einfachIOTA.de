@@ -51,8 +51,11 @@ let ipaddresses = []
 let ipaddresseslastminute = []
 let blockedIpAddresses = []
 let dailymaxPayoutsPerIP = process.env.dailymaxPayoutsPerIP
+console.log("dailymaxPayoutsPerIP", dailymaxPayoutsPerIP);
 let maxPayoutRequestsPerMinute = process.env.maxPayoutRequestsPerMinute
+console.log("maxPayoutRequestsPerMinute", maxPayoutRequestsPerMinute);
 let minPayoutIntervalinSeconds = process.env.minPayoutIntervalinSeconds*1000
+console.log("minPayoutIntervalinSeconds", minPayoutIntervalinSeconds);
 let lastpayouttime = Date.now() - minPayoutIntervalinSeconds-10000
 //clear ipaddresseslastminute every minute
 setInterval(()=>{
