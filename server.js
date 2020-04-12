@@ -61,21 +61,19 @@ let lastpayouttime = Date.now() - minPayoutIntervalinSeconds-10000
 setInterval(()=>{
     ipaddresseslastminute = []
 }, 60000)
-//clear blockedIP every 6h
+//clear blockedIP every 24 h
 setInterval(()=>{
     blockedIpAddresses = []
-}, 14400000)
+}, 86400000)
 
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
     let remoteAddress = req.headers['cf-connecting-ip'] || req.headers['x-forwarded-for'] || req.connection.remoteAddress
-    console.log("remoteAddress", remoteAddress);
     ipaddresseslastminute.push(remoteAddress)
     if (ipaddresseslastminute.filter(x => x === remoteAddress).length >= maxPayoutRequestsPerMinute) {
         if(blockedIpAddresses.indexOf(remoteAddress) == -1){
             blockedIpAddresses.push(remoteAddress)
-            console.log("blockedIpAddresses", blockedIpAddresses);
         }
         //delete in ipaddresses to decrease array size
         ipaddresses = ipaddresses.filter(x => x !== remoteAddress)
