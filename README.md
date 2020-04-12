@@ -6,7 +6,7 @@ Example:
 
 ```bash
 SEED='81TrytesSeed'
-iotaNodes=["https://nodes.devnet.thetangle.org:443", "https://nodes.devnet.iota.org:443"]
+iotaNodes=["https://nodes.comnet.thetangle.org:443"]
 PORT=3001
 VALUE=1
 debug=basic
@@ -20,11 +20,11 @@ maxPayoutValue=1000
 ```
 
 Create a .env in the frontend folder with an URL, all requests will be sent to it
-Choose between Devnet and Mainnet
+Choose between Comnet and Mainnet
 
 ```bash
 VUE_APP_URL=https://faucet.einfachiota.de
-VUE_APP_NETWORK=Devnet
+VUE_APP_NETWORK=Comnet
 VUE_APP_MAXVALUE=1000
 VUE_APP_TANGLE_EXPLORER=https://comnet.thetangle.org
 ```

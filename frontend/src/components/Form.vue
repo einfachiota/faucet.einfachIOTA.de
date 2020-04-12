@@ -53,18 +53,6 @@
     </el-form-item>
     <div v-if="payout_sent && txhash.length !== 81">
       <p>
-        <!-- <i18n path="transaction_address" />
-        <a
-          v-if="network == 'Devnet'"
-          :href="'https://devnet.thetangle.org/address/' + ruleForm.address"
-          target="_blank"
-        >TheTange.org</a>
-        <a
-          v-else
-          :href="'https://thetangle.org/address/' + ruleForm.address"
-          target="_blank"
-        >TheTange.org</a>
-        <i18n path="transaction_address1" />-->
         <i18n path="transaction_request_sent" />
       </p>
     </div>
@@ -72,12 +60,6 @@
       <p>
         <i18n path="transaction_sent" />
         <a
-          v-if="network == 'Devnet'"
-          :href="tangleExporer + '/transaction/' + txhash"
-          target="_blank"
-        >{{ tangleExporer }}</a>
-        <a
-          v-else
           :href="tangleExporer + '/transaction/' + txhash"
           target="_blank"
         >{{ tangleExporer }}</a>
@@ -133,8 +115,8 @@ export default {
 	name: 'Form',
 	data() {
 		var validateAddress = (rule, address, callback) => {
-			//accept any 81 tryte string as address, only for devnet
-			if (this.network == 'Devnet') {
+			//accept any 81 tryte string as address, only if not mainnet
+			if (this.network != 'Mainnet') {
 				let match = /[A-Z+9]{81}/.exec(address);
 				if (match == null) {
 					return callback(new Error(this.$i18n.t('form.err.add_address')));

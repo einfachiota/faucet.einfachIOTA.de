@@ -1,7 +1,7 @@
 {
   "name": "faucet.einfachiota.de",
   "version": "0.0.1",
-  "description": "IOTA Devnet faucet",
+  "description": "IOTA faucet",
   "main": "server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
