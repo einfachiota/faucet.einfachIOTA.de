@@ -58,32 +58,34 @@ let lastpayouttime = Date.now() - minPayoutIntervalinSeconds-10000
 setInterval(()=>{
     ipaddresseslastminute = []
 }, 60000)
-//clear blockedIP every 24h
+//clear blockedIP every 6h
 setInterval(()=>{
     blockedIpAddresses = []
-}, 86400000)
+}, 14400000)
 
 
 app.post("/pay_tokens", function (req, res) {
     console.log("pay_tokens called")
+    console.log("req.connection.remoteAddress", req.connection.remoteAddress);
     ipaddresseslastminute.push(req.connection.remoteAddress)
     if (ipaddresseslastminute.filter(x => x === req.connection.remoteAddress).length >= maxPayoutRequestsPerMinute) {
         if(blockedIpAddresses.indexOf(req.connection.remoteAddress) == -1){
             blockedIpAddresses.push(req.connection.remoteAddress)
+            console.log("blockedIpAddresses", blockedIpAddresses);
         }
         //delete in ipaddresses to decrease array size
         ipaddresses = ipaddresses.filter(x => x !== req.connection.remoteAddress)
-        res.send({ type: 'cantsend', msg: 'Du hast die maximale Anzahl an Anfragen schon erreicht.' });
+        res.send({ type: 'cantsend', msg: 'Max request per minute reached.' });
         return
     }
     //allow max one payout per time + max 10 seconds random
     if (Date.now() - minPayoutIntervalinSeconds - Math.floor(Math.random() *10000) < lastpayouttime) {
-        res.send({ type: 'cantsend', msg: 'Bitte versuch es später noch einmal.' });
+        res.send({ type: 'cantsend', msg: 'Please try again later.' });
         return
     }
     //check ip address is blocked
     if(blockedIpAddresses.indexOf(req.connection.remoteAddress) != -1){
-        res.send({ type: 'cantsend', msg: 'Du hast die maximale Anzahl an Anfragen schon erreicht.' });
+        res.send({ type: 'cantsend', msg: 'Max request already reached.' });
         return
     }
     let address = req.body.address;
@@ -129,7 +131,6 @@ app.post("/pay_tokens", function (req, res) {
 var options = {
     websockets: true,
     api: true
-    // ...
 }
 
 let server = paymentModule.createServer(app, options)
