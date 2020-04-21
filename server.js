@@ -97,7 +97,7 @@ app.post("/pay_tokens", function (req, res) {
     let tag = req.body.tag || 'EINFACHIOTA';
     console.log("address", address)
     console.log("value", value)
-    if (value > process.env.maxPayoutValue) {
+    if (parseInt(value) > process.env.maxPayoutValue) {
         value = process.env.maxPayoutValue
     }
     let payoutObject = {
