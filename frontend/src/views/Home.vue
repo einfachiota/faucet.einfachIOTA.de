@@ -30,6 +30,18 @@
         </iota-payment>
       </div>
     </div>
+    <span><i18n path="curl" /></span><br>
+    <div class="CURL">
+      curl --header "Content-Type: application/json" \<br>
+      --request POST \<br>
+      --data '{<br>
+      "address":"AHSD9FUNQCLBYQZQVZMOQLGQLYPWWNEWIIMJTVPQAA9LAHVQPVRBZODCKVGYNQAXVZMBWDIUEFVKOJHPCLRBHEISVA",<br>
+      "value":0,<br>
+      "message":"EINFACHIOTA", <br>
+      "tag": "EINFACHIOTA"<br>
+      }' \<br>
+      https://faucet.comnet.einfachiota.de/pay_tokens
+    </div>
   </div>
 </template>
 
@@ -116,6 +128,13 @@ export default {
       background-color: var(--primary-darken);
     }
   }
+}
+.CURL{
+  background-color: rgb(202, 202, 202);
+  text-align: left;
+  display: inline-block;
+  padding: 2rem;
+  margin-bottom: 1rem;
 }
 @media only screen and (max-width: 740px) {
   .hero {

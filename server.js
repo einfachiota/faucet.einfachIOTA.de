@@ -93,7 +93,10 @@ app.post("/pay_tokens", function (req, res) {
     let address = req.body.address;
     let value = req.body.value || 0;
     //limit message length to 1 tx
-    let message = req.body.message.slice(0, 1093) || 'EINFACHIOTA';
+    let message = 'EINFACHIOTA'
+    if(typeof req.body.message != 'undefined'){
+        message = req.body.message.slice(0, 1093)
+    }
     let tag = req.body.tag || 'EINFACHIOTA';
     console.log("address", address)
     console.log("value", value)
