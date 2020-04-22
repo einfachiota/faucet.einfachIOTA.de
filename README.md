@@ -1,6 +1,6 @@
 # IOTA faucet
 
-Create a .env file as described here https://github.com/machineeconomy/iota-payment
+Create a .env file as described here https://github.com/iota-pay/iota-payment-module and add the values below
 
 Example:
 
