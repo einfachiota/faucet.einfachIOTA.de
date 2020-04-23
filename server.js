@@ -95,9 +95,12 @@ app.post("/pay_tokens", function (req, res) {
     //limit message length to 1 tx
     let message = 'EINFACHIOTA'
     if(typeof req.body.message != 'undefined'){
-        message = req.body.message.slice(0, 1093)
+        let reqMessage = req.body.message.slice(0, 1093)
+        if(reqMessage != ''){
+            message = reqMessage
+        }
     }
-    let tag = req.body.tag || 'EINFACHIOTA';
+    let tag = req.body.tag || 'EINFACHIOTA FAUCET';
     console.log("address", address)
     console.log("value", value)
     if (parseInt(value) > process.env.maxPayoutValue) {
