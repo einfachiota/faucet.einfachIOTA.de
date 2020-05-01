@@ -162,9 +162,9 @@ export default {
 			error: false,
 			clicked: false,
 			ruleForm: {
-				address: '',
-				value: 0,
-				message: '',
+				address: this.$route.query.address || '',
+				value: this.$route.query.value || 0,
+				message: this.$route.query.message || '',
 				errors: []
 			},
 			rules: {
